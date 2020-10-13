@@ -1,57 +1,56 @@
 package com.crulqrl.thelist.home
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crulqrl.thelist.R
+import com.crulqrl.thelist.data.api.PostApi
 import com.crulqrl.thelist.data.entities.Post
 import com.crulqrl.thelist.home.adapter.PostsAdapter
+import com.crulqrl.thelist.inject.ViewModelProviderFactory
+import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : DaggerAppCompatActivity() {
 
-    private lateinit var postsAdapter: PostsAdapter
+    lateinit var postsAdapter: PostsAdapter
+    @Inject
+    lateinit var postApi: PostApi
+    @Inject
+    lateinit var providerFactory: ViewModelProviderFactory
+    private val viewModel by lazy {
+        ViewModelProvider(this, providerFactory).get(HomeViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        observe()
         initRv()
     }
 
-    fun initRv() {
+    private fun observe() {
+       viewModel.posts.observe(this) {
+           postsAdapter.submitList(it)
+       }
+
+        viewModel.showProgress.observe(this) {
+            progress_home.visibility = if (it) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun initRv() {
         val linearLayout = LinearLayoutManager(this)
         rv_home.layoutManager = linearLayout
-        val p1 = Post(
-            "1",
-            1,
-            "Hehe asdfj a aeh as ",
-            ""
-        )
-        val p2 = Post(
-            "1",
-            1,
-            "Hehe asdfj a aeh as asldkfjaldskjflkasjdflkasjdflkjsdlfjlkdfjas",
-            ""
-        )
-        val p3 = Post(
-            "1",
-            1,
-            "Hehe asdfj a aeh as ",
-            ""
-        )
-        val p4 = Post(
-            "1",
-            1,
-            "Hehe asdfj a aeh as  dalsfjas dfljaslfd lasldkfjlsadjflsajkdflksadjflskajdflasjdflkj",
-            ""
-        )
-        val p5 = Post(
-            "1",
-            1,
-            "Hehe asdfj a aeh as ",
-            ""
-        )
-        postsAdapter = PostsAdapter(arrayListOf(p1, p2, p3, p4, p5))
+        postsAdapter = PostsAdapter(arrayListOf())
         rv_home.adapter = postsAdapter
     }
 }

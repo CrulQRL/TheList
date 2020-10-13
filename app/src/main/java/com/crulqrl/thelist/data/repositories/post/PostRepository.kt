@@ -1,13 +1,12 @@
 package com.crulqrl.thelist.data.repositories.post
 
-import com.crulqrl.thelist.data.api.PostApi
 import com.crulqrl.thelist.data.entities.Post
 import javax.inject.Inject
 
-class PostRemoteDataSource @Inject constructor(private val postApi: PostApi) {
+class PostRepository @Inject constructor(private val postRemoteDataSource: PostRemoteDataSource) {
 
     suspend fun getPosts(): ArrayList<Post> {
-        return postApi.getPosts()
+        return postRemoteDataSource.getPosts()
     }
 
 }
