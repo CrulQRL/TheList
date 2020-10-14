@@ -8,10 +8,9 @@
         android:id="@+id/txt_item_post_title"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/space_small"
         android:padding="12dp"
-        android:textSize="14sp"
-        android:text="Hohohoehoeho"
+        android:textSize="@dimen/font_small"
         />
 
 </LinearLayout>

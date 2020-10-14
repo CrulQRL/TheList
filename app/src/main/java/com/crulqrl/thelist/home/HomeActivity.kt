@@ -35,12 +35,16 @@ class HomeActivity : DaggerAppCompatActivity() {
     }
 
     private fun observe() {
-       viewModel.posts.observe(this) {
+        viewModel.posts.observe(this) {
            postsAdapter.submitList(it)
-       }
+        }
 
         viewModel.showProgress.observe(this) {
             progress_home.visibility = if (it) View.VISIBLE else View.GONE
+        }
+
+        viewModel.showError.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
     }
 

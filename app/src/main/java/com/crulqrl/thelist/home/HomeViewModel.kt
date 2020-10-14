@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.crulqrl.thelist.data.api.Result
 import com.crulqrl.thelist.data.db.table.Post
 import com.crulqrl.thelist.data.repositories.post.PostRepository
 import kotlinx.coroutines.Dispatchers
@@ -17,6 +18,7 @@ class HomeViewModel @Inject constructor(private val postRepository: PostReposito
     private var getPostsJob: Job? = null
     val posts = MutableLiveData<List<Post>>()
     val showProgress = MutableLiveData<Boolean>()
+    val showError = MutableLiveData<String>()
 
     init {
         getPosts()
@@ -36,7 +38,16 @@ class HomeViewModel @Inject constructor(private val postRepository: PostReposito
             }
             val result = postRepository.getPosts()
             withContext(Dispatchers.Main) {
-                posts.value = result
+
+                when(result) {
+                    is Result.Success<ArrayList<Post>> -> {
+                        posts.value = result.data
+                    }
+                    is Result.Error -> {
+                        showError.value = "Oopss, something went wrong"
+                    }
+                }
+
                 showProgress.value = false
             }
         }
