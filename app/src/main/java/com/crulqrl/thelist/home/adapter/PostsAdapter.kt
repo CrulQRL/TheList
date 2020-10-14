@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.crulqrl.thelist.R
-import com.crulqrl.thelist.data.entities.Post
+import com.crulqrl.thelist.data.db.table.Post
 import kotlinx.android.synthetic.main.item_post.view.*
 
 class PostsAdapter(

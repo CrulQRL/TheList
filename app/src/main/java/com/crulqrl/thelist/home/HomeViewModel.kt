@@ -1,10 +1,10 @@
 package com.crulqrl.thelist.home
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.crulqrl.thelist.data.api.PostApi
-import com.crulqrl.thelist.data.entities.Post
+import com.crulqrl.thelist.data.db.table.Post
 import com.crulqrl.thelist.data.repositories.post.PostRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(private val postRepository: PostRepository) : ViewModel() {
 
     private var getPostsJob: Job? = null
-    val posts = MutableLiveData<ArrayList<Post>>()
+    val posts = MutableLiveData<List<Post>>()
     val showProgress = MutableLiveData<Boolean>()
 
     init {
@@ -35,6 +35,19 @@ class HomeViewModel @Inject constructor(private val postRepository: PostReposito
                 showProgress.value = true
             }
             val result = postRepository.getPosts()
+            withContext(Dispatchers.Main) {
+                posts.value = result
+                showProgress.value = false
+            }
+        }
+    }
+
+    fun searchTitle(query: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
+                showProgress.value = true
+            }
+            val result = postRepository.searchTitle(query)
             withContext(Dispatchers.Main) {
                 posts.value = result
                 showProgress.value = false

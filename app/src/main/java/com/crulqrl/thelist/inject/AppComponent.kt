@@ -12,6 +12,7 @@ import javax.inject.Singleton
 @Component(modules = [
     AndroidSupportInjectionModule::class,
     ApiModule::class,
+    DBModule::class,
     HomeActivityBuilder::class
 ])
 interface AppComponent : AndroidInjector<TheListApp> {

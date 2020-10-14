@@ -7,16 +7,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.crulqrl.thelist.R
+import com.crulqrl.thelist.common.ui.onTextChanged
 import com.crulqrl.thelist.data.api.PostApi
-import com.crulqrl.thelist.data.entities.Post
 import com.crulqrl.thelist.home.adapter.PostsAdapter
 import com.crulqrl.thelist.inject.ViewModelProviderFactory
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class HomeActivity : DaggerAppCompatActivity() {
@@ -34,6 +30,7 @@ class HomeActivity : DaggerAppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         observe()
+        initSearch()
         initRv()
     }
 
@@ -44,6 +41,12 @@ class HomeActivity : DaggerAppCompatActivity() {
 
         viewModel.showProgress.observe(this) {
             progress_home.visibility = if (it) View.VISIBLE else View.GONE
+        }
+    }
+
+    private fun initSearch() {
+        edit_search.onTextChanged(500, lifecycle) {
+            viewModel.searchTitle(it.toString())
         }
     }
 
